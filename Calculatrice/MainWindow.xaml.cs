@@ -255,5 +255,20 @@ namespace Calculatrice
             listOperations.Clear();
             minusSigne = false;
         }
+
+        private void button_clearOne_Click(object sender, RoutedEventArgs e)
+        {
+            if(!afterOperation && screenResult.Text.Length > 1)
+            {
+                screenResult.Text = screenResult.Text.Remove(screenResult.Text.Length - 1);
+            }
+
+            else
+            if (!afterOperation && screenResult.Text.Length == 1)
+            {
+                screenResult.Text = "0";
+            }
+
+        }
     }
 }
