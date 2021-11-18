@@ -22,7 +22,6 @@
             <RowDefinition Height="1*"></RowDefinition>
             <RowDefinition Height="1*"></RowDefinition>
         </Grid.RowDefinitions>
-
         <TextBlock x:Name="screenResult" Text="0" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" FontSize="48" TextAlignment="Right" VerticalAlignment="Center" Padding="0,0,12,0" Grid.IsSharedSizeScope="True"></TextBlock>
         <Button x:Name="button_7" Grid.Column="0" Grid.Row="2" Content="7" Height="70" Width="80" FontSize="20" Background="#FFE5E5E5" Click="button_click"/>
         <Button x:Name="button_8" Grid.Column="1" Grid.Row="2" Content="8" Height="70" Width="80" FontSize="20" Background="#FFE5E5E5" Click="button_click"/>

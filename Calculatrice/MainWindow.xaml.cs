@@ -12,17 +12,30 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 
 namespace Calculatrice
 {
     /// <summary>
     /// floateraction logic for MainWindow.xaml
     /// </summary>
+    /// 
+    public class Key
+    {
+        public string LicenceKey { get; set; }
+    }
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
+        
         }
 
  
@@ -32,9 +45,11 @@ namespace Calculatrice
         //Liste des opérations
         private List<string> listOperations = new List<string>();
 
-
         //Savoir le signe
         private Boolean minusSigne = false;
+
+        private string? licenceKey = null;
+        private bool licenceOk = false;
 
         private void updateNumber(string? n)
         {
@@ -63,7 +78,7 @@ namespace Calculatrice
                     changeAfterOperation();
                 }
 
-             
+                EasterEgg();
             }
 
         }
@@ -86,92 +101,103 @@ namespace Calculatrice
         private void button_click(object sender, RoutedEventArgs e)
         {
 
-            if ((Button)sender == button_comma)
+            if(licenceOk)
             {
-                updateNumber(",");
-            }
-
-            if ((Button)sender == button_negative)
-            {
-                changeSigne();
-            }
-
-            if ((Button)sender == button_0)
-            {
-                if(screenResult.Text != "0")
+                if ((Button)sender == button_comma)
                 {
-                    updateNumber("0");
+                    updateNumber(",");
+                }
+
+                if ((Button)sender == button_negative)
+                {
+                    changeSigne();
+                }
+
+                if ((Button)sender == button_0)
+                {
+                    if (screenResult.Text != "0")
+                    {
+                        updateNumber("0");
+                    }
+                }
+
+                if ((Button)sender == button_1)
+                {
+                    updateNumber("1");
+                }
+
+                if ((Button)sender == button_2)
+                {
+                    updateNumber("2");
+                }
+
+                if ((Button)sender == button_3)
+                {
+                    updateNumber("3");
+                }
+
+                if ((Button)sender == button_4)
+                {
+                    updateNumber("4");
+                }
+
+                if ((Button)sender == button_5)
+                {
+                    updateNumber("5");
+                }
+
+                if ((Button)sender == button_6)
+                {
+                    updateNumber("6");
+                }
+                if ((Button)sender == button_7)
+                {
+                    updateNumber("7");
+                }
+
+                if ((Button)sender == button_8)
+                {
+                    updateNumber("8");
+                }
+
+                if ((Button)sender == button_9)
+                {
+                    updateNumber("9");
+                }
+
+                if ((Button)sender == button_plus)
+                {
+                    operation("+");
+                }
+
+                if ((Button)sender == button_minus)
+                {
+                    operation("-");
+                }
+
+                if ((Button)sender == button_divide)
+                {
+                    operation("/");
+                }
+
+                if ((Button)sender == button_x)
+                {
+                    operation("*");
+                }
+
+                if ((Button)sender == button_equal)
+                {
+                    result();
                 }
             }
-
-            if ((Button)sender == button_1)
+            else
             {
-                updateNumber("1");
-            }
+                //MessageBox.Show("Clé non valide", "Acheter une clé", MessageBoxButton.OK);
+                getData();
 
-            if ((Button)sender == button_2)
-            {
-                updateNumber("2");
             }
 
-            if ((Button)sender == button_3)
-            {
-                updateNumber("3");
-            }
 
-            if ((Button)sender == button_4)
-            {
-                updateNumber("4");
-            }
-
-            if ((Button)sender == button_5)
-            {
-                updateNumber("5");
-            }
-
-            if ((Button)sender == button_6)
-            {
-                updateNumber("6");
-            }
-            if ((Button)sender == button_7)
-            {
-                updateNumber("7");
-            }
-
-            if ((Button)sender == button_8)
-            {
-                updateNumber("8");
-            }
-
-            if ((Button)sender == button_9)
-            {
-                updateNumber("9");
-            }
-
-            if ((Button)sender == button_plus)
-            {
-                operation("+");
-            }
-
-            if ((Button)sender == button_minus)
-            {
-                operation("-");
-            }
-
-            if ((Button)sender == button_divide)
-            {
-                operation("/");
-            }
-
-            if ((Button)sender == button_x)
-            {
-                operation("*");
-            }
-
-            if ((Button)sender == button_equal)
-            {
-                result();
-            }
 
         }
         private void operation(string op)
@@ -249,7 +275,6 @@ namespace Calculatrice
 
         private void button_clear_Click(object sender, RoutedEventArgs e)
         {
-
             afterOperation = false;
             screenResult.Text = "0";
             listOperations.Clear();
@@ -269,6 +294,63 @@ namespace Calculatrice
                 screenResult.Text = "0";
             }
 
+        }
+
+        private void save()
+        {
+            StreamWriter sw = new StreamWriter("D:\\Test.txt");
+            sw.WriteLine("Hello World");
+            sw.Close();
+        }
+        private void read()
+        {
+            StreamReader sw = new StreamReader("D:\\Test.txt");
+            licenceKey = sw.ReadLine();
+            sw.Close();
+        }
+
+        private static readonly HttpClient client = new HttpClient();
+        private static async Task getData()
+        {
+            string txt = "";
+            HttpResponseMessage response = await client.GetAsync("https://v1.nocodeapi.com/andry974/google_sheets/qIxGfcybupTYjQnU?tabId=api-database");
+            if (response.IsSuccessStatusCode)
+            {
+                txt = await response.Content.ReadAsStringAsync();
+                var serializeOptions = new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                };
+                string json = JsonSerializer.Serialize(txt,serializeOptions);
+                Console.WriteLine(json);
+                //MessageBox.Show(json);
+            }
+           
+        }
+
+        private static async Task ValidateLicencekey(string l)
+        {
+            string txt = "";
+            HttpResponseMessage response = await client.GetAsync("https://v1.nocodeapi.com/andry974/google_sheets/qIxGfcybupTYjQnU/search?tabId=api-database&searchKey=api&searchValue="+l);
+            if (response.IsSuccessStatusCode)
+            {
+                txt = await response.Content.ReadAsStringAsync();
+                var json = JsonSerializer.Serialize(txt);
+                MessageBox.Show(json);
+            }
+          
+
+        }
+
+        private  void EasterEgg()
+        {
+            if(screenResult.Text == "707")
+            {
+                var window = new Window1();
+                window.ShowDialog();
+            }
+           
         }
     }
 }
