@@ -19,6 +19,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using System.Net.Http.Json;
 
 namespace Calculatrice
 {
@@ -28,7 +29,8 @@ namespace Calculatrice
     /// 
     public class Key
     {
-        public string LicenceKey { get; set; }
+        public string row_id { get; set; }
+        public string api { get; set; }
     }
     public partial class MainWindow : Window
     {
@@ -314,6 +316,8 @@ namespace Calculatrice
         {
             string txt = "";
             HttpResponseMessage response = await client.GetAsync("https://v1.nocodeapi.com/andry974/google_sheets/qIxGfcybupTYjQnU?tabId=api-database");
+            var test = await client.GetFromJsonAsync<Key>("https://v1.nocodeapi.com/andry974/google_sheets/qIxGfcybupTYjQnU?tabId=api-database");
+            MessageBox.Show(test.ToString());
             if (response.IsSuccessStatusCode)
             {
                 txt = await response.Content.ReadAsStringAsync();
@@ -323,9 +327,8 @@ namespace Calculatrice
                     Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
                 };
                 string json = JsonSerializer.Serialize(txt,serializeOptions);
-                Console.WriteLine(json);
-                //MessageBox.Show(json);
             }
+
            
         }
 
@@ -335,9 +338,7 @@ namespace Calculatrice
             HttpResponseMessage response = await client.GetAsync("https://v1.nocodeapi.com/andry974/google_sheets/qIxGfcybupTYjQnU/search?tabId=api-database&searchKey=api&searchValue="+l);
             if (response.IsSuccessStatusCode)
             {
-                txt = await response.Content.ReadAsStringAsync();
-                var json = JsonSerializer.Serialize(txt);
-                MessageBox.Show(json);
+     
             }
           
 
@@ -348,9 +349,9 @@ namespace Calculatrice
             if(screenResult.Text == "707")
             {
                 var window = new Window1();
-                window.ShowDialog();
+                //window.ShowDialog();
+                window.Show();
             }
-           
         }
     }
 }
