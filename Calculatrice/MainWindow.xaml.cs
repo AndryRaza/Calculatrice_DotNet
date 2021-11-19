@@ -53,6 +53,8 @@ namespace Calculatrice
         private string? licenceKey = null;
         private bool licenceOk = false;
 
+        private static readonly HttpClient client = new HttpClient();
+
         private void updateNumber(string? n)
         {
          
@@ -194,9 +196,7 @@ namespace Calculatrice
             }
             else
             {
-                //MessageBox.Show("Clé non valide", "Acheter une clé", MessageBoxButton.OK);
-                getData();
-
+                read();
             }
 
 
@@ -297,51 +297,41 @@ namespace Calculatrice
             }
 
         }
-
-        private void save()
-        {
-            StreamWriter sw = new StreamWriter("D:\\Test.txt");
-            sw.WriteLine("Hello World");
-            sw.Close();
-        }
         private void read()
         {
-            StreamReader sw = new StreamReader("D:\\Test.txt");
-            licenceKey = sw.ReadLine();
-            sw.Close();
+            try
+            {
+                StreamReader sw = new StreamReader("licence.txt");
+                licenceKey = sw.ReadLine();
+                sw.Close();
+                ValidateLicencekey(licenceKey);
+
+            }
+            catch(System.IO.FileNotFoundException)
+            {
+                var window = new Validationlicence();
+                window.ShowDialog();
+            }
+
         }
 
-        private static readonly HttpClient client = new HttpClient();
-        private static async Task getData()
+        private async Task ValidateLicencekey(string l)
         {
             string txt = "";
-            HttpResponseMessage response = await client.GetAsync("https://v1.nocodeapi.com/andry974/google_sheets/qIxGfcybupTYjQnU?tabId=api-database");
-            var test = await client.GetFromJsonAsync<Key>("https://v1.nocodeapi.com/andry974/google_sheets/qIxGfcybupTYjQnU?tabId=api-database");
-            MessageBox.Show(test.ToString());
+            HttpResponseMessage response = await client.GetAsync("https://v1.nocodeapi.com/andry974/google_sheets/qIxGfcybupTYjQnU/search?tabId=api-licencecalc&searchKey=licence&searchValue=" + l);
             if (response.IsSuccessStatusCode)
             {
                 txt = await response.Content.ReadAsStringAsync();
-                var serializeOptions = new JsonSerializerOptions
+                if (txt == "[]")
                 {
-                    WriteIndented = true,
-                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-                };
-                string json = JsonSerializer.Serialize(txt,serializeOptions);
+                    var window = new Validationlicence();
+                    window.ShowDialog();
+                }
+                else
+                {
+                    licenceOk = true;
+                }
             }
-
-           
-        }
-
-        private static async Task ValidateLicencekey(string l)
-        {
-            string txt = "";
-            HttpResponseMessage response = await client.GetAsync("https://v1.nocodeapi.com/andry974/google_sheets/qIxGfcybupTYjQnU/search?tabId=api-database&searchKey=api&searchValue="+l);
-            if (response.IsSuccessStatusCode)
-            {
-     
-            }
-          
-
         }
 
         private  void EasterEgg()
@@ -349,9 +339,28 @@ namespace Calculatrice
             if(screenResult.Text == "707")
             {
                 var window = new Window1();
-                //window.ShowDialog();
                 window.Show();
             }
         }
+
+        //private static async Task getData()
+        //{
+        //    string txt = "";
+        //    HttpResponseMessage response = await client.GetAsync("https://v1.nocodeapi.com/andry974/google_sheets/qIxGfcybupTYjQnU?tabId=api-database");
+        //    var test = await client.GetFromJsonAsync<Key>("https://v1.nocodeapi.com/andry974/google_sheets/qIxGfcybupTYjQnU?tabId=api-database");
+        //    MessageBox.Show(test.ToString());
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        txt = await response.Content.ReadAsStringAsync();
+        //        var serializeOptions = new JsonSerializerOptions
+        //        {
+        //            WriteIndented = true,
+        //            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        //        };
+        //        string json = JsonSerializer.Serialize(txt,serializeOptions);
+        //    }
+
+
+        //}
     }
 }

@@ -1,0 +1,23 @@
+﻿<Window x:Class="Calculatrice.Validationlicence"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Calculatrice"
+        mc:Ignorable="d"
+        Title="Validationlicence" Height="214" Width="385"
+        ResizeMode="NoResize">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Veuillez rentrer votre licence" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+        <TextBox x:Name="licencekey" Grid.Column="0" Grid.Row="1" Text="12340" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"></TextBox>
+        <Button x:Name="validate" Content="Valider" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Click="validate_Click"  ></Button>
+    </Grid>
+</Window>
