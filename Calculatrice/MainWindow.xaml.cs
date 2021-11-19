@@ -92,6 +92,7 @@ namespace Calculatrice
             screenResult.Text = "0";
         }
 
+        //Pour taper un nouveau chiffre après avoir cliqué sur un des boutons d'opération
         private void changeAfterOperation()
         {
             afterOperation = !afterOperation;
@@ -275,6 +276,7 @@ namespace Calculatrice
             }
         }
 
+        //Bouton C
         private void button_clear_Click(object sender, RoutedEventArgs e)
         {
             afterOperation = false;
@@ -283,6 +285,7 @@ namespace Calculatrice
             minusSigne = false;
         }
 
+        //Bouton CE qui efface seulement un chiffre
         private void button_clearOne_Click(object sender, RoutedEventArgs e)
         {
             if(!afterOperation && screenResult.Text.Length > 1)
@@ -297,6 +300,7 @@ namespace Calculatrice
             }
 
         }
+        //Lire le fichier où se trouve la clé puis la vérifier, en cas d'erreur ouvre une fenetre pour entrer une clé
         private void read()
         {
             try
@@ -315,6 +319,7 @@ namespace Calculatrice
 
         }
 
+        //Valider la clé 
         private async Task ValidateLicencekey(string l)
         {
             string txt = "";
